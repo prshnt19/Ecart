@@ -132,18 +132,20 @@ function updatePopover(cart)
 {
     
     var popStr = "";
-    popStr = popStr + "<h5> Cart for your items in my shopping cart </h5><div class='mx-2 my-2'>";
+    popStr = popStr + "<h5> Cart for your items in my shopping cart </h5>";
     var i = 1;
     for (var item in cart){
       if(cart[item]>0)
       {
-        popStr = popStr + "<b>" + i + "</b>. ";
-        popStr = popStr + document.getElementById('name' + item).innerHTML.slice(0, 19) + "... Qty: " + cart[item] + "<br>";
+        popStr = popStr + "<b>" + i + "</b>.";
+        popStr = popStr + document.getElementById('name' + item).innerHTML.slice(0, 19) + "... Qty: " + cart[item] + "<br><span class='divpoppr' class='mx-2 my-2' id='divpop" + item + "'> <button id='minuss" + item + "' class='btn btn-primary minuss'>-</button> <span id='vall" + item + "''>" + cart[item] + "</span> <button id='pluss" + item + "' class='btn btn-primary pluss'> + </button>";
+        popStr = popStr + "</span>" ;
         i = i+1;
     }
     }
-    popStr = popStr + "</div>" 
+    
     console.log(popStr);
+    //document.getElementById('divpop').innerHTML = "<span id='divpopp'><button type='button' id='popcart' class='btn btn-secondary mx-2' data-container='body' data-content='" + popStr + "' data-html=true data-toggle='popover' data-placement='bottom'>Cart(<span id='cartn'>0</span>)</button></span>";
     document.getElementById('popcart').setAttribute('data-content', popStr);
     $('#popcart').popover('show');
 }
@@ -183,6 +185,14 @@ $('.divpr').on("click", "button.plus", function() {
 $('.divpr').on("click", "button.cartt", function() {
     a = this.id.slice(2, );
     cart['pr' + a] = cart['pr' + a] + 1;
+    //document.getElementById('valpr' + a).innerHTML = cart['pr' + a];
+    updatecart(cart);
+});
+$('.divpoppr').on("click", "button.minuss", function() {
+    console.log("minuss");
+    a = this.id.slice(8, );
+    cart['pr' + a] = cart['pr' + a] - 1;
+    cart['pr' + a] = Math.max(0, cart['pr' + a]);
     //document.getElementById('valpr' + a).innerHTML = cart['pr' + a];
     updatecart(cart);
 });

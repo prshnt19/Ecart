@@ -9,7 +9,7 @@ urlpatterns = [
     path("tracker/",views.tracker,name="trackershop"),
     path("search/",views.search,name="searchshop"),
     path("productview/<int:myid>",views.productview,name="productviewshop"),
-    path("checkout/",views.search,name="checkoutshop"),
+    path("checkout/",views.checkout,name="checkoutshop"),
  #   path("search/",views.search,name="searchshop"),
   #   path("search/",views.search,name="searchshop"),
 

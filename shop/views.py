@@ -2,14 +2,9 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from .models import Product,Contact,Orders,OrderUpdate
 from math import ceil
+import json
 
-# Create your views here.
 def index(request):
-    # products = Product.objects.all()
-    # print(products)
-    # n = len(products)
-    # nSlides = n//4 + ceil((n/4)-(n//4))
-
     allProds = []
     catprods = Product.objects.values('category', 'id')
     cats = {item['category'] for item in catprods}
@@ -18,12 +13,9 @@ def index(request):
         n = len(prod)
         nSlides = n // 4 + ceil((n / 4) - (n // 4))
         allProds.append([prod, range(1, nSlides), nSlides])
-
-    # params = {'no_of_slides':nSlides, 'range': range(1,nSlides),'product': products}
-    # allProds = [[products, range(1, nSlides), nSlides],
-    #             [products, range(1, nSlides), nSlides]]
     params = {'allProds':allProds}
     return render(request, 'shop/index.html', params)
+
 def about(request):
     return render(request, 'shop/about.html')
 
@@ -33,7 +25,6 @@ def contact(request):
         email = request.POST.get('email', '')
         phone = request.POST.get('phone', '')
         desc = request.POST.get('desc', '')
-        #print(name)
         contact = Contact(name=name, email=email, phone=phone, desc=desc)
         contact.save()
     return render(request, 'shop/contact.html')
@@ -65,4 +56,21 @@ def productview(request,myid):
     return render(request, 'shop/prodview.html', {'product':product[0]})
 
 def tracker(request):
+    if request.method=="POST":
+        orderId = request.POST.get('orderId', '')
+        email = request.POST.get('email', '')
+        try:
+            order = Orders.objects.filter(order_id=orderId, email=email)
+            if len(order)>0:
+                update = OrderUpdate.objects.filter(order_id=orderId)
+                updates = []
+                for item in update:
+                    updates.append({'text': item.update_desc, 'time': item.timestamp})
+                    response = json.dumps(updates, default=str)
+                return HttpResponse(response)
+            else:
+                return HttpResponse('{}')
+        except Exception as e:
+            return HttpResponse('{}')
+
     return render(request, 'shop/tracker.html')

@@ -72,7 +72,7 @@
               <h5 class="card-title" id="namepr{{i.id}}">{{i.product_name}}</h5>
               <p class="card-text">{{i.desc|slice:"0:40"}}...</p>
               <span id="divpr{{i.id}}" class="divpr">
-                <button id="pr{{i.id}}" class="btn btn-primary cartt">Add To Cart</button>
+                <button id="pr{{i.id}}" class="btn btn-primary cart">Add To Cart</button>
               </span>
               <a href="/shop/productview/{{i.id}}"><button id="qv{{i.id}}" class="btn btn-primary cart mx-2">QuickView</button></a>
               
@@ -103,98 +103,93 @@
 </div>
  {% endblock %}
  {% block js %}
- <script>
-  if(localStorage.getItem('cart') == null){
+<script>
+if(localStorage.getItem('cart') == null)
+{
   var cart = {};
-  }
-  else
-  {
-    cart = JSON.parse(localStorage.getItem('cart'));
-    document.getElementById('cartn').innerHTML = Object.keys(cart).length;
-    updatecart(cart);
-  }
-  $('.cartt').click(function(){
-    
-
+}
+else
+{
+  cart = JSON.parse(localStorage.getItem('cart'));
+  updateCart(cart);
+}
+$('.divpr').on('click', 'button.cart', function(){
     var idstr = this.id.toString();
-    
-    if (cart[idstr] ==undefined){
-      
-    cart[idstr] = 1;
+    if (cart[idstr] != undefined)
+    {
+        cart[idstr] = cart[idstr] + 1;
+    } else {
+        cart[idstr] = 1;
     }
-    updatecart(cart);
-    //localStorage.setItem('cart', JSON.stringify(cart));
-    //document.getElementById('cartn').innerHTML = Object.keys(cart).length;
-  });
+    updateCart(cart);
+});
 $('#popcart').popover();
-updatePopover(cart);
 function updatePopover(cart)
 {
-    
     var popStr = "";
-    popStr = popStr + "<h5> Cart for your items in my shopping cart </h5>";
+    popStr = popStr + "<h5> Cart for your items in my shopping cart </h5><div class='mx-2 my-2'>";
     var i = 1;
-    for (var item in cart){
+    console.log(cart);
+    for (var item in cart)
+    {
       if(cart[item]>0)
       {
-        popStr = popStr + "<b>" + i + "</b>.";
-        popStr = popStr + document.getElementById('name' + item).innerHTML.slice(0, 19) + "... Qty: " + cart[item] + "<br><span class='divpoppr' class='mx-2 my-2' id='divpop" + item + "'> <button id='minuss" + item + "' class='btn btn-primary minuss'>-</button> <span id='vall" + item + "''>" + cart[item] + "</span> <button id='pluss" + item + "' class='btn btn-primary pluss'> + </button>";
-        popStr = popStr + "</span>" ;
+        popStr = popStr + "<b>" + i + "</b>. ";
+        popStr = popStr + document.getElementById('name' + item).innerHTML.slice(0, 19) + "... Qty: " + cart[item] + "<br>";
         i = i+1;
+      }
     }
-    }
-    
+    popStr = popStr + "</div><a href='/shop/checkout'><button class='btn btn-primary' id ='checkout'>Checkout</button></a> <button class='btn btn-primary' onclick='clearCart()' id ='clearCart'>Clear Cart</button>" 
     console.log(popStr);
-    //document.getElementById('divpop').innerHTML = "<span id='divpopp'><button type='button' id='popcart' class='btn btn-secondary mx-2' data-container='body' data-content='" + popStr + "' data-html=true data-toggle='popover' data-placement='bottom'>Cart(<span id='cartn'>0</span>)</button></span>";
     document.getElementById('popcart').setAttribute('data-content', popStr);
-    $('#popcart').popover('show');
+    
 }
-function updatecart(cart) {
-  
-  var count=0;
-    for (var item in cart) {
-      if(cart[item]==0){
-        count+=1;
-        document.getElementById('div' + item).innerHTML ="<button id='" + item + "'class='btn btn-primary cartt'>Add To Cart</button>";
-        
-    }
-    else{
-      //console.log(cart);
+function updateCart(cart) {
+  var sum=0;
+    for (var item in cart) 
+    {
+      sum=sum+cart[item];
+      if(cart[item]==0)
+      {
+        document.getElementById('div' + item).innerHTML = '<button id="' + item + '" class="btn btn-primary cart">Add To Cart</button>'
+      }
+      else
+      {
       document.getElementById('div' + item).innerHTML = "<button id='minus" + item + "' class='btn btn-primary minus'>-</button> <span id='val" + item + "''>" + cart[item] + "</span> <button id='plus" + item + "' class='btn btn-primary plus'> + </button>";
-    }
+      }
     }
     localStorage.setItem('cart', JSON.stringify(cart));
-    document.getElementById('cartn').innerHTML = (Object.keys(cart).length)-count;
+    document.getElementById('cartn').innerHTML = sum;
     updatePopover(cart);
-
 }
-// If plus or minus button is clicked, change the cart as well as the display value
+function clearCart() 
+{
+    cart = JSON.parse(localStorage.getItem('cart'));
+    for (var item in cart)
+    {
+        document.getElementById('div' + item).innerHTML = '<button id="' + item + '" class="btn btn-primary cart">Add To Cart</button>';
+    }
+    localStorage.clear();
+    cart = {};
+    updateCart(cart);
+    $('#popcart').popover('show');
+}
 $('.divpr').on("click", "button.minus", function() {
     a = this.id.slice(7, );
     cart['pr' + a] = cart['pr' + a] - 1;
     cart['pr' + a] = Math.max(0, cart['pr' + a]);
-    document.getElementById('valpr' + a).innerHTML = cart['pr' + a];
-    updatecart(cart);
+    updateCart(cart);
+    $('#popcart').popover('show');
 });
 $('.divpr').on("click", "button.plus", function() {
     a = this.id.slice(6, );
     cart['pr' + a] = cart['pr' + a] + 1;
-    //document.getElementById('valpr' + a).innerHTML = cart['pr' + a];
-    updatecart(cart);
+    updateCart(cart);
+    $('#popcart').popover('show');
 });
-$('.divpr').on("click", "button.cartt", function() {
-    a = this.id.slice(2, );
-    cart['pr' + a] = cart['pr' + a] + 1;
-    //document.getElementById('valpr' + a).innerHTML = cart['pr' + a];
-    updatecart(cart);
+$('.popcart').on("click", function() {
+  $('#popcart').popover('show');
 });
-$('.divpoppr').on("click", "button.minuss", function() {
-    console.log("minuss");
-    a = this.id.slice(8, );
-    cart['pr' + a] = cart['pr' + a] - 1;
-    cart['pr' + a] = Math.max(0, cart['pr' + a]);
-    //document.getElementById('valpr' + a).innerHTML = cart['pr' + a];
-    updatecart(cart);
-});
+
   </script>
   {% endblock %}

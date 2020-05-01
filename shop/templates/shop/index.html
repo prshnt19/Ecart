@@ -19,9 +19,13 @@
           body .carousel-indicator li{
           background-color: blue;
           }
+          .carousel-indicators li {
+ 
+           background-color: #d83b3b;
+          }
 
           body .carousel-indicators{
-          bottom: 0;
+          bottom: -40px;
           }
 
           body .carousel-control-prev-icon,
@@ -71,6 +75,8 @@
             <div class="card-body">
               <h5 class="card-title" id="namepr{{i.id}}">{{i.product_name}}</h5>
               <p class="card-text">{{i.desc|slice:"0:40"}}...</p>
+              <h5 class="card-title" id="pricepr{{i.id}}">Rs{{i.price}}</h5>
+
               <span id="divpr{{i.id}}" class="divpr">
                 <button id="pr{{i.id}}" class="btn btn-primary cart">Add To Cart</button>
               </span>
@@ -118,11 +124,12 @@ $('.divpr').on('click', 'button.cart', function(){
     if (cart[idstr] != undefined)
     {
         qty = cart[idstr][0] + 1;
-        cart[idstr] = [qty,name];
+        cart[idstr] = [qty,name,price];
     } else {
         qty = 1;
         name = document.getElementById('name'+idstr).innerHTML;
-        cart[idstr] = [qty,name];
+        price = document.getElementById('price'+idstr).innerHTML;
+        cart[idstr] = [qty,name,price];
 
     }
     updateCart(cart);

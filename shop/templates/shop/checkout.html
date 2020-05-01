@@ -1,12 +1,30 @@
 {% extends 'shop/basic.html' %}
 {% block title%} Checkout - My Awesome Cart{% endblock %}
+{% block css %} 
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width:100%;
+  }
+  
+  td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 20px;
+    width:25%
+  }
+  
+  tr:nth-child(even) {
+    background-color: #dddddd;
+  
+  }{% endblock %}
 {% block body %}
 <div class="container">
     <div class="col my-4">
         <h2>Step 1 - My Awesome Cart Express Checkout - Review Your Cart Items</h2>
         <div class="my-4">
-            <ul class="list-group" id="items">
-            </ul>
+            <table class="list-group" id="items" >
+            </table>
         </div>
     </div>
     <div class="col my-4">
@@ -63,21 +81,51 @@ if (localStorage.getItem('cart') == null) {
 }
 console.log(cart);
 var sum = 0;
+var tot= 0;
 if ($.isEmptyObject(cart)) {
     //if object is empty
     mystr = `<p>Your cart is empty, please add some items to your cart before checking out!</p>`
     $('#items').append(mystr);
 } else {
+    var table = document.getElementById("items");
+    var row = table.insertRow(0);
+    var cell0 = row.insertCell(0);
+    var cell1 = row.insertCell(1);
+    var cell2 = row.insertCell(2);
+    var cell3 = row.insertCell(3);
+    cell0.innerHTML = "<h5> Item</h5>";
+    cell1.innerHTML = "<h5>Quantity</h5>";
+    cell2.innerHTML = "<h5>Price</h5>";
+    cell3.innerHTML = "<h5> Item Total</h5>";
+    var i = 1;
     for (item in cart) {
+        var row = table.insertRow(i);
+        var cell0 = row.insertCell(0);
+        var cell1 = row.insertCell(1);
+        var cell2 = row.insertCell(2);
+        var cell3 = row.insertCell(3);
         let name = cart[item][1];
         let qty = cart[item][0];
+        let price = cart[item][2];
+        let amount = price.slice(2);
+        let total = amount* qty;
         sum = sum + qty;
-        mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">
-                    ${name}
-                    <span class="badge badge-primary badge-pill">${qty}</span>
-                </li>`
-        $('#items').append(mystr);
+        tot = tot + total;
+        cell0.innerHTML = "" + name +"";
+        cell1.innerHTML = "<pre>" + qty +"          X</pre>";
+        cell2.innerHTML = "" + price +"";
+        cell3.innerHTML = "Rs." + total +"";
+        i = i +1;
     }
+    var row = table.insertRow(i);
+    var cell0 = row.insertCell(0);
+    var cell1 = row.insertCell(1);
+    var cell2 = row.insertCell(2);
+    var cell3 = row.insertCell(3);
+    cell0.innerHTML = "";
+    cell1.innerHTML = "";
+    cell2.innerHTML = "<h4>Total</h4>";
+    cell3.innerHTML = "<h4>Rs. " + tot +"</h4>";
 }
 document.getElementById('cartn').innerHTML = sum;
 $('#itemsJson').val(JSON.stringify(cart));

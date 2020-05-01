@@ -27,6 +27,8 @@ def contact(request):
         desc = request.POST.get('desc', '')
         contact = Contact(name=name, email=email, phone=phone, desc=desc)
         contact.save()
+        thank = True
+        return render(request, 'shop/contact.html',{'thank':thank})
     return render(request, 'shop/contact.html')
 
 def checkout(request):
@@ -62,11 +64,13 @@ def tracker(request):
         try:
             order = Orders.objects.filter(order_id=orderId, email=email)
             if len(order)>0:
+                print("in for")
                 update = OrderUpdate.objects.filter(order_id=orderId)
                 updates = []
                 for item in update:
                     updates.append({'text': item.update_desc, 'time': item.timestamp})
                     response = json.dumps(updates, default=str)
+                print("hello")
                 return HttpResponse(response)
             else:
                 return HttpResponse('{}')

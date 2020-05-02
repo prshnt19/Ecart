@@ -25,12 +25,22 @@ table {
         <div class="my-4">
             <table class="list-group" id="items" >
             </table>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mt-3">
+                  <li class="breadcrumb-item active" aria-current="page">Your Cart Total Is <b>Rs. <span id="totalPrice"></span></b>. Enter your details below & place your order. Thanks for using My Awesome Cart!</li>
+                </ol>
+              </nav>
         </div>
     </div>
+  
+      
     <div class="col my-4">
         <h2>Step 2 - Enter Address & Other Details:</h2>
         <form method="post" action="/shop/checkout/">{% csrf_token %}
             <input type="hidden" name="itemsJson" id="itemsJson">
+            <input type="hidden" name="amount" id="amount">
+
+
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="inputname">Name</label>
@@ -86,6 +96,7 @@ if ($.isEmptyObject(cart)) {
     //if object is empty
     mystr = `<p>Your cart is empty, please add some items to your cart before checking out!</p>`
     $('#items').append(mystr);
+    document.getElementById('navv').innerHTML="";
 } else {
     var table = document.getElementById("items");
     var row = table.insertRow(0);
@@ -127,12 +138,19 @@ if ($.isEmptyObject(cart)) {
     cell2.innerHTML = "<h4>Total</h4>";
     cell3.innerHTML = "<h4>Rs. " + tot +"</h4>";
 }
+
 document.getElementById('cartn').innerHTML = sum;
+
+document.getElementById('totalPrice').innerHTML = tot;
+document.getElementById('amount').innerHTML = tot;
+
 $('#itemsJson').val(JSON.stringify(cart));
 {% if thank %}
 alert('Thanks for ordering with us. Your order is is {{id}}. Use it to track your order using our order tracker');
 localStorage.clear();
 document.location = "/shop";
 {% endif %}
+$('#amount').val($('#totalPrice').html())
+
 </script>
 {% endblock %}

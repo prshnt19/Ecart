@@ -49,7 +49,7 @@ def checkout(request):
         return render(request, 'shop/checkout.html', {'thank':thank, 'id': id})
     return render(request, 'shop/checkout.html')
 
-def search(request):
+def search(request): 
     return render(request, 'shop/search.html')
 
 def productview(request,myid):

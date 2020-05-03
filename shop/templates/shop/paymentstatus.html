@@ -2,21 +2,27 @@
 {% block title%} My Awesome Cart Tracker{% endblock %}
 {% block body %}
 <div class="container">
-    {{response}}
     <div class="col my-4">
 
         <h2>Payment status regarding your order Id {{response.ORDERID}}</h2>
         {% if response.RESPCODE == '01' %}
         ORDER SUCCESS
+        <a href="/shop/tracker/">Track your Order</a>
+
         {% else %}
         ORDER FAILURE
         {% endif%}
-
+        <br>
+       
     </div>
 
 </div>
 {% endblock %}
 {% block js %}
 <script>
+    {% if thank %}
+localStorage.clear();
+
+{% endif %}
 </script>
 {% endblock %}

@@ -150,6 +150,10 @@ alert('Thanks for ordering with us. Your order is is {{id}}. Use it to track you
 localStorage.clear();
 document.location = "/shop";
 {% endif %}
+{% if error %}
+alert('There are no items in your cart.Please fill items first');
+document.location = "/shop";
+{% endif %}
 $('#amount').val($('#totalPrice').html())
 
 </script>

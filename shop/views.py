@@ -5,7 +5,7 @@ from math import ceil
 import json
 from PayTm import Checksum
 from django.views.decorators.csrf import csrf_exempt
-MERCHANT_KEY = ''
+MERCHANT_KEY = 'cWIL2fOXxDINEdnl'
 
 def index(request):
     allProds = []
@@ -53,7 +53,7 @@ def checkout(request):
         id = order.order_id
         param_dict = {
 
-                'MID': '',
+                'MID': 'cWcWaw69767774088480',
                 'ORDER_ID': str(order.order_id),
                 'TXN_AMOUNT': str(amount),
                 'CUST_ID': email,
@@ -122,18 +122,19 @@ def tracker(request):
         try:
             order = Orders.objects.filter(order_id=orderId, email=email)
             if len(order)>0:
-                print("in for")
                 update = OrderUpdate.objects.filter(order_id=orderId)
                 updates = []
                 for item in update:
                     updates.append({'text': item.update_desc, 'time': item.timestamp})
-                    response = json.dumps(updates, default=str)
-                print("hello")
+                    response = json.dumps({"status":"success", "updates": updates, "itemsJson": order[0].items_json}, default=str)
                 return HttpResponse(response)
             else:
-                return HttpResponse('{}')
+                return HttpResponse('{"status":"noitem"}')
         except Exception as e:
-            return HttpResponse('{}')
+            return HttpResponse('{"status":"error"}')
+
+    return render(request, 'shop/tracker.html')
+
 
     return render(request, 'shop/tracker.html')
 @csrf_exempt

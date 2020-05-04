@@ -5,7 +5,7 @@ from math import ceil
 import json
 from PayTm import Checksum
 from django.views.decorators.csrf import csrf_exempt
-MERCHANT_KEY = 'cWIL2fOXxDINEdnl'
+MERCHANT_KEY = 'key'
 
 def index(request):
     allProds = []
@@ -53,7 +53,7 @@ def checkout(request):
         id = order.order_id
         param_dict = {
 
-                'MID': 'cWcWaw69767774088480',
+                'MID': '',
                 'ORDER_ID': str(order.order_id),
                 'TXN_AMOUNT': str(amount),
                 'CUST_ID': email,
